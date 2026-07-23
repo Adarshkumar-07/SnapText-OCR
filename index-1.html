@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SnapText OCR — Extract Text from Images Instantly</title>
+
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="SnapText OCR is a free, browser-based OCR tool that extracts text from JPG, PNG, and WEBP images instantly using Tesseract.js. No upload to any server, 100% private." />
+  <meta name="keywords" content="OCR, image to text, text extraction, Tesseract.js, free OCR tool, online OCR, JPG to text, PNG to text, extract text from image" />
+  <meta name="author" content="SnapText OCR" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph Tags -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="SnapText OCR — Extract Text from Images Instantly" />
+  <meta property="og:description" content="A free, private, browser-based OCR tool. Drag, drop, and extract text from any image in seconds." />
+  <meta property="og:image" content="https://via.placeholder.com/1200x630.png?text=SnapText+OCR" />
+  <meta property="og:url" content="https://example.com/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="SnapText OCR — Extract Text from Images Instantly" />
+  <meta name="twitter:description" content="A free, private, browser-based OCR tool powered by Tesseract.js." />
+
+  <!-- Favicon Placeholder -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔎</text></svg>" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Skip link for accessibility -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- ===================== HEADER / NAVIGATION ===================== -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="nav-brand">
+        <span class="brand-icon" aria-hidden="true">🔎</span>
+        <span class="brand-name">SnapText <em>OCR</em></span>
+      </div>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navLinks">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#main-content">Home</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light and dark mode" title="Toggle theme (Ctrl+D)">
+        <span class="theme-icon" id="themeIcon" aria-hidden="true">🌙</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ===================== MAIN CONTENT ===================== -->
+  <main id="main-content">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-inner">
+        <h1>Turn Images into <span class="gradient-text">Editable Text</span></h1>
+        <p class="hero-subtitle">
+          Free, fast, and private optical character recognition — right in your browser.
+          No uploads, no servers, no sign-up.
+        </p>
+      </div>
+    </section>
+
+    <!-- OCR APP CARD -->
+    <section class="ocr-app" aria-label="OCR tool">
+      <div class="glass-card ocr-card">
+
+        <!-- Upload Zone -->
+        <div class="upload-zone" id="uploadZone" tabindex="0" role="button"
+             aria-label="Upload an image by clicking or dragging and dropping it here">
+          <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" hidden aria-label="Choose image file" />
+
+          <div class="upload-content" id="uploadPrompt">
+            <div class="upload-icon" aria-hidden="true">📤</div>
+            <p class="upload-title">Drag &amp; drop an image here</p>
+            <p class="upload-subtitle">or click to browse — JPG, JPEG, PNG, WEBP supported</p>
+            <button type="button" class="btn btn-primary" id="browseBtn">Choose Image</button>
+          </div>
+
+          <!-- Image preview -->
+          <div class="preview-content hidden" id="previewContent">
+            <img id="previewImage" alt="Selected image preview" />
+            <div class="preview-info">
+              <span id="fileName">filename.jpg</span>
+              <span id="fileSize">0 KB</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-row">
+          <button type="button" class="btn btn-primary" id="extractBtn" disabled>
+            <span aria-hidden="true">✨</span> Extract Text
+          </button>
+          <button type="button" class="btn btn-secondary" id="resetImageBtn" disabled>
+            <span aria-hidden="true">🔄</span> Reset Image
+          </button>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section hidden" id="progressSection" aria-live="polite">
+          <div class="spinner" aria-hidden="true"></div>
+          <p class="progress-label" id="progressLabel">Initializing OCR engine…</p>
+          <div class="progress-bar-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressBar">
+            <div class="progress-bar-fill" id="progressFill"></div>
+          </div>
+          <p class="progress-percent" id="progressPercent">0%</p>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section hidden" id="resultsSection">
+          <div class="results-header">
+            <h2>Extracted Text</h2>
+            <div class="stats-row">
+              <span class="stat-chip">📝 <strong id="charCount">0</strong> characters</span>
+              <span class="stat-chip">📚 <strong id="wordCount">0</strong> words</span>
+              <span class="stat-chip">⏱️ <strong id="processTime">0s</strong></span>
+            </div>
+          </div>
+
+          <label for="resultText" class="sr-only">Extracted text output</label>
+          <textarea id="resultText" rows="10" placeholder="Your extracted text will appear here…" aria-label="Extracted text"></textarea>
+
+          <div class="results-actions">
+            <button type="button" class="btn btn-primary" id="copyBtn">
+              <span aria-hidden="true">📋</span> Copy Text
+            </button>
+            <button type="button" class="btn btn-primary" id="downloadBtn">
+              <span aria-hidden="true">⬇️</span> Download .TXT
+            </button>
+            <button type="button" class="btn btn-danger" id="clearBtn">
+              <span aria-hidden="true">🗑️</span> Clear
+            </button>
+          </div>
+        </div>
+
+        <!-- Local Intelligence Section -->
+        <div class="intel-section hidden" id="intelSection">
+          <button type="button" class="intel-toggle" id="intelToggle" aria-expanded="true" aria-controls="intelBody">
+            <span>🛡 Local Intelligence</span>
+            <span class="intel-chevron" aria-hidden="true">▾</span>
+          </button>
+
+          <div class="intel-body" id="intelBody">
+            <div class="intel-grid">
+
+              <!-- File Information -->
+              <div class="glass-card intel-card">
+                <h3>📄 File Information</h3>
+                <div id="fileInfoCard"><p class="intel-empty">No file analyzed yet.</p></div>
+              </div>
+
+              <!-- Cryptographic Fingerprints -->
+              <div class="glass-card intel-card">
+                <h3>🔑 Cryptographic Fingerprints</h3>
+                <div id="hashCard"><p class="intel-empty">No file analyzed yet.</p></div>
+              </div>
+
+              <!-- Metadata Analysis -->
+              <div class="glass-card intel-card">
+                <h3>🧬 Metadata Analysis</h3>
+                <div id="metadataCard"><p class="intel-empty">No file analyzed yet.</p></div>
+              </div>
+
+              <!-- Privacy Analysis -->
+              <div class="glass-card intel-card">
+                <h3>🕵️ Privacy Analysis</h3>
+                <div id="privacyCard"><p class="intel-empty">No file analyzed yet.</p></div>
+              </div>
+
+              <!-- Security Analysis -->
+              <div class="glass-card intel-card">
+                <h3>🔐 Security Analysis</h3>
+                <div id="securityCard"><p class="intel-empty">No file analyzed yet.</p></div>
+              </div>
+
+              <!-- Image Properties -->
+              <div class="glass-card intel-card">
+                <h3>🖼️ Image Properties</h3>
+                <div id="imagePropsCard"><p class="intel-empty">No file analyzed yet.</p></div>
+              </div>
+
+              <!-- QR / Barcode -->
+              <div class="glass-card intel-card">
+                <h3>▦ QR / Barcode</h3>
+                <div id="codeCard"><p class="intel-empty">No file analyzed yet.</p></div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Error Message -->
+        <div class="error-box hidden" id="errorBox" role="alert">
+          <span aria-hidden="true">⚠️</span>
+          <span id="errorMessage">Something went wrong.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features" id="features">
+      <h2 class="section-title">Why Use <span class="gradient-text">SnapText</span>?</h2>
+      <div class="features-grid">
+        <div class="glass-card feature-card">
+          <div class="feature-icon" aria-hidden="true">🔒</div>
+          <h3>100% Private</h3>
+          <p>Your images never leave your device. All OCR processing happens locally in your browser.</p>
+        </div>
+        <div class="glass-card feature-card">
+          <div class="feature-icon" aria-hidden="true">⚡</div>
+          <h3>Lightning Fast</h3>
+          <p>Powered by Tesseract.js WebAssembly engine for quick and accurate text recognition.</p>
+        </div>
+        <div class="glass-card feature-card">
+          <div class="feature-icon" aria-hidden="true">💸</div>
+          <h3>Completely Free</h3>
+          <p>No subscriptions, no hidden fees, no sign-up required. Use it as much as you like.</p>
+        </div>
+        <div class="glass-card feature-card">
+          <div class="feature-icon" aria-hidden="true">📱</div>
+          <h3>Works Everywhere</h3>
+          <p>Fully responsive design that works beautifully on desktop, tablet, and mobile devices.</p>
+        </div>
+        <div class="glass-card feature-card">
+          <div class="feature-icon" aria-hidden="true">🎨</div>
+          <h3>Modern Interface</h3>
+          <p>Enjoy a clean, glassmorphic design with smooth animations and light/dark mode.</p>
+        </div>
+        <div class="glass-card feature-card">
+          <div class="feature-icon" aria-hidden="true">⌨️</div>
+          <h3>Keyboard Friendly</h3>
+          <p>Use handy keyboard shortcuts to speed up your workflow without touching your mouse.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="about" id="about">
+      <div class="glass-card about-card">
+        <h2 class="section-title">About <span class="gradient-text">SnapText OCR</span></h2>
+        <p>
+          SnapText OCR is a lightweight, browser-based tool that converts images containing text into
+          editable, searchable text. Built with plain HTML, CSS, and JavaScript, it uses
+          <strong>Tesseract.js</strong> — an open-source OCR engine compiled to WebAssembly — to perform
+          all recognition directly on your device. That means there is no backend server, no data
+          collection, and no waiting on network uploads. Simply drop in an image and watch your text
+          appear in seconds.
+        </p>
+        <p>
+          Whether you're digitizing a scanned document, extracting a quote from a screenshot, or pulling
+          text from a photo of a whiteboard, SnapText OCR aims to make the process fast, accurate, and
+          effortless — on any device, at any time.
+        </p>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq" id="faq">
+      <h2 class="section-title">Frequently Asked <span class="gradient-text">Questions</span></h2>
+      <div class="faq-list">
+        <details class="glass-card faq-item">
+          <summary>What image formats are supported?</summary>
+          <p>SnapText OCR supports JPG, JPEG, PNG, and WEBP image formats.</p>
+        </details>
+        <details class="glass-card faq-item">
+          <summary>Is my image uploaded to a server?</summary>
+          <p>No. All processing happens locally in your browser using Tesseract.js. Your images never leave your device.</p>
+        </details>
+        <details class="glass-card faq-item">
+          <summary>Why is OCR taking a long time?</summary>
+          <p>Processing time depends on image size, resolution, and your device's performance. Very large images may take longer — try resizing or cropping for faster results.</p>
+        </details>
+        <details class="glass-card faq-item">
+          <summary>Can I use this on my phone?</summary>
+          <p>Yes! SnapText OCR is fully responsive and works on mobile browsers including Chrome and Android browsers.</p>
+        </details>
+        <details class="glass-card faq-item">
+          <summary>Does it support handwriting?</summary>
+          <p>Tesseract.js is optimized for printed text. Handwriting recognition accuracy may vary and is generally less reliable.</p>
+        </details>
+        <details class="glass-card faq-item">
+          <summary>Are there keyboard shortcuts?</summary>
+          <p>Yes — press <kbd>Ctrl</kbd>+<kbd>V</kbd> to paste an image, <kbd>Ctrl</kbd>+<kbd>Enter</kbd> to extract text, <kbd>Ctrl</kbd>+<kbd>D</kbd> to toggle theme, and <kbd>Esc</kbd> to clear.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <span class="brand-icon" aria-hidden="true">🔎</span> SnapText OCR
+      </div>
+      <p>Built with HTML, CSS &amp; JavaScript · Powered by Tesseract.js</p>
+      <p class="footer-copy">&copy; <span id="currentYear"></span> SnapText OCR. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Scroll to top -->
+  <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top" title="Back to top">
+    <span aria-hidden="true">↑</span>
+  </button>
+
+  <!-- Toast container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Tesseract.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <!-- ExifReader CDN (metadata analysis) -->
+  <script src="https://cdn.jsdelivr.net/npm/exifreader@4/dist/exif-reader.js"></script>
+  <!-- jsQR CDN (QR code detection) -->
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1/dist/jsQR.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
